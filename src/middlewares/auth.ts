@@ -1,16 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 import AppError from "../utils/AppError";
-
-type dataJwt = JwtPayload & { userId: string };
-
-export interface AuthRequest extends Request {
-  userId: string;
-}
 
 export
 const verifyToken = (
-  req: Request & { userId: string },
+  req: Request,
   _res: Response,
   next: NextFunction
 ) => {
@@ -21,7 +15,7 @@ const verifyToken = (
       throw new AppError("Token não informado", 401);
     }
 
-    const data = jwt.verify(token, process.env.JWT_SECRET ?? "") as dataJwt
+    const data = jwt.verify(token, process.env.JWT_SECRET ?? "") as { userId: string }
 
     req.userId = data.userId
 
