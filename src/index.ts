@@ -2,7 +2,7 @@ require("dotenv").config();
 
 import "reflect-metadata";
 import express from "express";
-import { AppDataSource } from "./data-source";
+import { AppDataSource } from "./database/data-source";
 
 import cors from "cors";
 

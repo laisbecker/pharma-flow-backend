@@ -1,0 +1,7 @@
+[25-02-2025 06:36:46.464 PM] info: 	O servidor está rodando em http://localhost:3335
+[26-02-2025 11:11:19.542 AM] info: 	O servidor está rodando em http://localhost:3335
+[26-02-2025 11:22:06.869 AM] info: 	O servidor está rodando em http://localhost:3335
+[26-02-2025 02:24:22.660 PM] info: 	O servidor está rodando em http://localhost:3335
+[26-02-2025 02:24:24.622 PM] info: 	O servidor está rodando em http://localhost:3335
+[26-02-2025 02:24:31.905 PM] info: 	O servidor está rodando em http://localhost:3335
+[26-02-2025 03:37:17.670 PM] info: 	O servidor está rodando em http://localhost:3335
