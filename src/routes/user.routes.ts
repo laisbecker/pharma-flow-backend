@@ -7,5 +7,6 @@ const userRouter = Router()
 const userController = new UserController()
 
 userRouter.post("/", verifyToken, verifyUser, userController.create)
+userRouter.get("/", verifyToken, verifyUser, userController.getAll)
 
 export default userRouter
