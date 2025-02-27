@@ -68,6 +68,20 @@ class UserController {
       next(error);
     }
   }
+
+  getAll = async (req: Request, res: Response, next: NextFunction) => {
+    const { profile } = req.query
+
+    const whereConditions: any = {}
+    if (profile) whereConditions.profile = profile
+
+    try{
+      const listUsers = await this.userRepository.find({where: whereConditions, select: ["id", "name", "status", "profile"]})
+      res.status(200).json(listUsers)
+    } catch(error){
+      next(error)
+    }
+  }
 }
 
 export default UserController;
