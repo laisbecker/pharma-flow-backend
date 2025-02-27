@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 import { User } from "./User";
 
-@Entity("branch")
+@Entity("branches")
 export class Branch {
     @PrimaryGeneratedColumn()
     id: number
