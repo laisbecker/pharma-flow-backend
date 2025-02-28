@@ -82,6 +82,36 @@ class UserController {
       next(error)
     }
   }
+
+  getOne = async (req: Request, res: Response, next: NextFunction) => {
+    try{
+      const params = req.params
+      const user = await this.userRepository.findOne({where: {id: +params.id}, relations: ['driver', 'branch']})
+
+      if(!user){
+        throw new AppError("Usuário não localizado", 404)
+      }
+
+      let full_address = ''
+      if(user.profile === 'DRIVER' && user.driver){
+        full_address = user.driver.full_address
+      } else if(user.profile === 'BRANCH' && user.branch){
+        full_address = user.branch.full_address
+      }
+
+      const responseData = {
+        id: user.id,
+        name: user.name,
+        status: user.status,
+        profile: user.profile,
+        full_address: full_address
+      }
+
+      res.status(200).json(responseData)
+    } catch(error){
+      next(error)
+    }
+  }
 }
 
 export default UserController;
