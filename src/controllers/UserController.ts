@@ -1,12 +1,12 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express"
 import { AppDataSource } from "../database/data-source"
-import AppError from "../utils/AppError";
-import { User } from "../entities/User";
-import { validateCNPJ, validateCPF, validateEmail } from "../utils/validators";
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { Branch } from "../entities/Branch";
-import { Driver } from "../entities/Driver";
+import AppError from "../utils/AppError"
+import { User } from "../entities/User"
+import { validateCNPJ, validateCPF, validateEmail } from "../utils/validators"
+import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
+import { Branch } from "../entities/Branch"
+import { Driver } from "../entities/Driver"
 
 class UserController {
   private userRepository
@@ -22,11 +22,11 @@ class UserController {
   create = async (req: Request, res: Response, next: NextFunction) => {
 
     const { name, profile, email, password, document, full_address } = req.body
-    
+
     try {
 
       if (!name || !profile || !email || !password || !document) {
-        throw new AppError("Todos os campos obrigatórios devem ser preenchidos", 400);
+        throw new AppError("Todos os campos obrigatórios devem ser preenchidos", 400)
       }
 
       if (!validateEmail(email)) {
@@ -57,15 +57,15 @@ class UserController {
         await this.branchRepository.save({ full_address, document, user: user })
       }
 
-      const token = jwt.sign({id: user.id, profile: user.profile},
+      const token = jwt.sign({ id: user.id, profile: user.profile },
         process.env.JWT_SECRET!,
-        {expiresIn: "3h"}
+        { expiresIn: "3h" }
       )
 
-      res.status(201).json({name: user.name, profile: user.profile, token})
+      res.status(201).json({ name: user.name, profile: user.profile, token })
 
     } catch (error) {
-      next(error);
+      next(error)
     }
   }
 
@@ -75,27 +75,27 @@ class UserController {
     const whereConditions: any = {}
     if (profile) whereConditions.profile = profile
 
-    try{
-      const listUsers = await this.userRepository.find({where: whereConditions, select: ["id", "name", "status", "profile"]})
+    try {
+      const listUsers = await this.userRepository.find({ where: whereConditions, select: ["id", "name", "status", "profile"] })
       res.status(200).json(listUsers)
-    } catch(error){
+    } catch (error) {
       next(error)
     }
   }
 
   getOne = async (req: Request, res: Response, next: NextFunction) => {
-    try{
+    try {
       const params = req.params
-      const user = await this.userRepository.findOne({where: {id: +params.id}, relations: ['driver', 'branch']})
+      const user = await this.userRepository.findOne({ where: { id: +params.id }, relations: ['driver', 'branch'] })
 
-      if(!user){
+      if (!user) {
         throw new AppError("Usuário não localizado", 404)
       }
 
       let full_address = ''
-      if(user.profile === 'DRIVER' && user.driver){
+      if (user.profile === 'DRIVER' && user.driver) {
         full_address = user.driver.full_address
-      } else if(user.profile === 'BRANCH' && user.branch){
+      } else if (user.profile === 'BRANCH' && user.branch) {
         full_address = user.branch.full_address
       }
 
@@ -108,10 +108,65 @@ class UserController {
       }
 
       res.status(200).json(responseData)
-    } catch(error){
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  update = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const params = req.params
+      const body = req.body
+      const forbiddenFields = ['id', 'created_at', 'updated_at', 'status', 'profile']
+
+      const hasForbiddenField = Object.keys(body).some(field => forbiddenFields.includes(field))
+      if (hasForbiddenField) {
+        throw new AppError('Existem informações que não podem ser alteradas', 403)
+      }
+
+      const user = await this.userRepository.findOne({
+        where: { id: +params.id },
+        relations: ['driver', 'branch']
+      })
+
+      if (!user) {
+        throw new AppError('Usuário não encontrado!', 404)
+      }
+
+      if (body.name) user.name = body.name
+      if (body.email) user.email = body.email
+      if (body.password) {
+        user.password_hash = await bcrypt.hash(body.password, 10)
+      }
+
+      if (body.full_address) {
+        if (user.profile === 'DRIVER' && user.driver) {
+          user.driver.full_address = body.full_address
+          await this.driverRepository.save(user.driver)
+        }
+        else if (user.profile === 'BRANCH' && user.branch) {
+          user.branch.full_address = body.full_address
+          await this.branchRepository.save(user.branch)
+        }
+      }
+
+      const updatedUser = await this.userRepository.save(user)
+
+      const responseData = {
+        id: updatedUser.id,
+        name: updatedUser.name,
+        email:updatedUser.email,
+        status: updatedUser.status,
+        profile: updatedUser.profile,
+        full_address: body.full_address || (user.profile === 'DRIVER' ? user.driver?.full_address : user.branch?.full_address)
+      }
+
+      res.status(200).json(responseData)
+
+    } catch (error) {
       next(error)
     }
   }
 }
 
-export default UserController;
+export default UserController
