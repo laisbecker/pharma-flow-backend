@@ -155,7 +155,7 @@ class UserController {
       const responseData = {
         id: updatedUser.id,
         name: updatedUser.name,
-        email:updatedUser.email,
+        email: updatedUser.email,
         status: updatedUser.status,
         profile: updatedUser.profile,
         full_address: body.full_address || (user.profile === 'DRIVER' ? user.driver?.full_address : user.branch?.full_address)
@@ -167,6 +167,25 @@ class UserController {
       next(error)
     }
   }
+
+  status = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const params = req.params
+      const user = await this.userRepository.findOneBy({ id: +params.id })
+
+      if (!user) {
+        throw new AppError('Usuário não encontrado', 404)
+      } else {
+        user.status = !user.status
+
+        await this.userRepository.save(user)
+        res.status(200).json({message: "status do usuário atualizado!", status: user.status})
+      }
+    } catch (error) {
+      next(error)
+    }
+  }
+
 }
 
 export default UserController
