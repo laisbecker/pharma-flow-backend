@@ -47,6 +47,22 @@ class ProductController {
         }
     }
 
+    getAll = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const branchId = (req as any).branchId
+
+            const products = await this.productRepository.find({
+                where: {branch: {id: branchId}},
+                relations: ["branch"]
+            })
+
+            res.status(200).json(products)
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
 }
 
 export default ProductController
