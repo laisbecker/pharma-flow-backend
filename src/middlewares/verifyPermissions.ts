@@ -2,10 +2,9 @@ import { Request, Response, NextFunction } from "express";
 import { AppDataSource } from "../database/data-source";
 import { User } from "../entities/User";
 import AppError from "../utils/AppError";
+import { Branch } from "../entities/Branch";
 
 class VerifyPermissions {
-
-  private static userRepository = AppDataSource.getRepository(User)
 
   static async verifyAdmin(req: Request, res: Response, next: NextFunction) {
     try {
@@ -45,7 +44,40 @@ class VerifyPermissions {
       next(error)
     }
   }
-}
 
+  static async verifyBranch(req: Request, res: Response, next: NextFunction) {
+    try {
+      const userRepository = AppDataSource.getRepository(User)
+      const branchRepository = AppDataSource.getRepository(Branch)
+
+      if (!req.userId) {
+        throw new AppError("Usuário não autenticado", 401)
+      }
+
+      const user = await userRepository.findOne({
+        where: { id: +req.userId },
+        relations: ["branch"],
+      })
+
+      if (!user || user.profile !== "BRANCH"){
+        throw new AppError("Acesso permitido somente para filiais", 403)
+      }
+
+      const branch = await branchRepository.findOne({
+        where: {user: {id: user.id }},
+      })
+  
+      if (!branch) {
+        throw new AppError("Filial não encontrada", 404)
+      }
+
+      (req as any).branchId = branch.id
+
+      next()
+    } catch (error) {
+      next(error)
+    }
+  }
+}
 
 export default VerifyPermissions

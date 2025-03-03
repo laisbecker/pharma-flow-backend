@@ -21,9 +21,8 @@ class UserController {
 
   create = async (req: Request, res: Response, next: NextFunction) => {
 
-    const { name, profile, email, password, document, full_address } = req.body
-
     try {
+      const { name, profile, email, password, document, full_address } = req.body
 
       if (!name || !profile || !email || !password || !document) {
         throw new AppError("Todos os campos obrigatórios devem ser preenchidos", 400)
@@ -179,13 +178,12 @@ class UserController {
         user.status = !user.status
 
         await this.userRepository.save(user)
-        res.status(200).json({message: "status do usuário atualizado!", status: user.status})
+        res.status(200).json({ message: "status do usuário atualizado!", status: user.status })
       }
     } catch (error) {
       next(error)
     }
   }
-
 }
 
 export default UserController
