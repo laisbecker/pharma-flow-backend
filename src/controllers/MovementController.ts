@@ -75,7 +75,7 @@ class MovementController {
             const branchId = (req as any).branchId
 
             const queryOptions: FindManyOptions<Movement> = {
-                relations: ["destinationBranch", "product"],
+                relations: ["destinationBranch", "destinationBranch.user","product"],
                 order: {created_at: "DESC"}
             }
 
@@ -84,7 +84,25 @@ class MovementController {
             }
 
             const movements = await this.movementRepository.find(queryOptions)
-            res.status(200).json(movements)
+
+            const formattedMovements = movements.map(movement => ({
+                id: movement.id,
+                destination_branch: {
+                    name: movement.destinationBranch.user.name,
+                    full_address: movement.destinationBranch.full_address
+                },
+                product: {
+                    name: movement.product.name,
+                    description: movement.product.description,
+                    url_cover: movement.product.url_cover
+                },
+                quantity: movement.quantity,
+                status: movement.status,
+                created_at: movement.created_at,
+                updated_at: movement.updated_at
+            }))
+
+            res.status(200).json(formattedMovements)
 
         } catch(error){
             next(error)
