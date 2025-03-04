@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm"
 import { Branch } from "./Branch"
+import { Movement } from "./Movement"
 
 @Entity("products")
 export class Product {
@@ -27,4 +28,7 @@ export class Product {
 
     @UpdateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", onUpdate: "CURRENT_TIMESTAMP" })
     updated_at: Date
+
+    @OneToMany(() => Movement, (movement) => movement.product)
+    movements: Movement[]
 }
