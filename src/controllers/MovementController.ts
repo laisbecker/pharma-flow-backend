@@ -3,6 +3,7 @@ import { AppDataSource } from "../database/data-source"
 import { Product } from "../entities/Product"
 import AppError from "../utils/AppError"
 import { Movement } from "../entities/Movement";
+import { FindManyOptions } from "typeorm";
 
 class MovementController {
 
@@ -64,6 +65,28 @@ class MovementController {
 
             res.status(201).json({ message: "Movimentação criada com sucesso" })
         } catch (error) {
+            next(error)
+        }
+    }
+
+    getAll = async (req: Request, res: Response, next: NextFunction) => {
+        try{
+            const userProfile = (req as any).userProfile
+            const branchId = (req as any).branchId
+
+            const queryOptions: FindManyOptions<Movement> = {
+                relations: ["destinationBranch", "product"],
+                order: {created_at: "DESC"}
+            }
+
+            if (userProfile === "BRANCH" && branchId){
+                queryOptions.where = {destinationBranch: {id: branchId}}
+            }
+
+            const movements = await this.movementRepository.find(queryOptions)
+            res.status(200).json(movements)
+
+        } catch(error){
             next(error)
         }
     }

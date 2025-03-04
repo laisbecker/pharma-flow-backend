@@ -78,6 +78,30 @@ class VerifyPermissions {
       next(error)
     }
   }
+
+  static async verifyBranchOrDriver(req: Request, res: Response, next: NextFunction){
+    try{
+      const userRepository = AppDataSource.getRepository(User)
+
+      if(!req.userId){
+        throw new AppError("Usuário não autenticado", 401)
+      }
+
+      const user = await userRepository.findOne({ where: {id: +req.userId}, relations: ["branch", "driver"]})
+
+      if(!user || (user.profile !== "BRANCH" && user.profile !== "DRIVER")){
+        throw new AppError("Acesso permitido apenas para filiais e motoristas", 403)
+      }
+
+      (req as any).userProfile = user.profile;
+      (req as any).branchId = user.branch?.id;
+      (req as any).driverId = user.driver?.id
+
+      next()
+    } catch(error){
+      next(error)
+    }
+  }
 }
 
 export default VerifyPermissions

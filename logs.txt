@@ -96,3 +96,7 @@
 [03-03-2025 05:59:26.426 PM] info: 	Servidor rodando na porta 3335
 [04-03-2025 12:21:30.369 AM] info: 	Servidor rodando na porta 3335
 [04-03-2025 12:42:21.008 AM] info: 	Servidor rodando na porta 3335
+[04-03-2025 11:27:51.679 AM] info: 	Servidor rodando na porta 3335
+[04-03-2025 11:33:45.457 AM] info: 	Servidor rodando na porta 3335
+[04-03-2025 11:34:20.178 AM] info: 	Servidor rodando na porta 3335
+[04-03-2025 12:40:56.307 PM] info: 	Servidor rodando na porta 3335
