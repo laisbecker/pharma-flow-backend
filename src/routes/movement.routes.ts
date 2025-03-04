@@ -7,5 +7,6 @@ const movementRouter = Router()
 const movementController = new MovementController()
 
 movementRouter.post("/", verifyToken, VerifyPermissions.verifyBranch, movementController.create)
+movementRouter.get("/", verifyToken, VerifyPermissions.verifyBranchOrDriver, movementController.getAll)
 
 export default movementRouter
