@@ -100,3 +100,21 @@
 [04-03-2025 11:33:45.457 AM] info: 	Servidor rodando na porta 3335
 [04-03-2025 11:34:20.178 AM] info: 	Servidor rodando na porta 3335
 [04-03-2025 12:40:56.307 PM] info: 	Servidor rodando na porta 3335
+[05-03-2025 10:26:41.435 AM] info: 	Servidor rodando na porta 3335
+[05-03-2025 10:44:21.191 AM] error: 	[ERRO GLOBAL] Mensagem: inserção ou atualização em tabela "movements" viola restrição de chave estrangeira "FK_81a78601cc668877e02df50feff"
+[05-03-2025 10:45:33.263 AM] error: 	[ERRO GLOBAL] Mensagem: inserção ou atualização em tabela "movements" viola restrição de chave estrangeira "FK_81a78601cc668877e02df50feff"
+[05-03-2025 10:52:39.944 AM] error: 	[ERRO GLOBAL] Mensagem: inserção ou atualização em tabela "movements" viola restrição de chave estrangeira "FK_81a78601cc668877e02df50feff"
+[05-03-2025 11:10:30.294 AM] error: 	[ERRO GLOBAL] Mensagem: inserção ou atualização em tabela "movements" viola restrição de chave estrangeira "FK_81a78601cc668877e02df50feff"
+[05-03-2025 11:14:09.372 AM] info: 	Servidor rodando na porta 3335
+[05-03-2025 11:14:37.205 AM] error: 	[ERRO GLOBAL] Mensagem: Cannot save, given value must be instance of entity class, instead object literal is given. Or you must specify an entity target to method call.
+[05-03-2025 11:15:03.905 AM] info: 	Servidor rodando na porta 3335
+[05-03-2025 11:21:11.287 AM] info: 	Servidor rodando na porta 3335
+[05-03-2025 11:21:13.529 AM] error: 	[ERRO GLOBAL] Mensagem: inserção ou atualização em tabela "movements" viola restrição de chave estrangeira "FK_81a78601cc668877e02df50feff"
+[05-03-2025 12:26:56.902 PM] info: 	Servidor rodando na porta 3335
+[05-03-2025 12:41:24.544 PM] info: 	Servidor rodando na porta 3335
+[05-03-2025 01:38:35.747 PM] info: 	Servidor rodando na porta 3335
+[05-03-2025 02:00:42.871 PM] info: 	Servidor rodando na porta 3335
+[05-03-2025 02:01:11.501 PM] info: 	Servidor rodando na porta 3335
+[05-03-2025 02:09:59.539 PM] info: 	Servidor rodando na porta 3335
+[05-03-2025 02:11:16.022 PM] info: 	Servidor rodando na porta 3335
+[05-03-2025 02:16:43.286 PM] info: 	Servidor rodando na porta 3335

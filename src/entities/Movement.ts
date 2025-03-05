@@ -2,6 +2,7 @@ import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGenerat
 import { MovementStatus } from "../enums/MovementStatus"
 import { Branch } from "./Branch"
 import { Product } from "./Product"
+import { Driver } from "./Driver"
 
 @Entity("movements")
 export class Movement {
@@ -15,6 +16,13 @@ export class Movement {
     @ManyToOne(() => Product, (product) => product.movements)
     @JoinColumn({ name: "product_id" })
     product: Product
+
+    @ManyToOne(() => Driver, (driver) => driver.movements, {
+        onDelete: 'SET NULL',
+        nullable: true
+    })
+    @JoinColumn({ name: "driver_id" })
+    driver?: Driver
 
     @Column({ type: "int", nullable: false })
     quantity: number
