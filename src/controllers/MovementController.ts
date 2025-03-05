@@ -139,7 +139,7 @@ class MovementController {
             }
 
             if (movement.driver && movement.driver.id !== driverId) {
-                throw new AppError("Outro motorista já está responsável por esta movimentação", 400)
+                throw new AppError("Outro motorista já está responsável por esta movimentação", 403)
             }
 
             movement.status = MovementStatus.IN_PROGRESS
@@ -166,6 +166,80 @@ class MovementController {
 
             res.status(200).json(formattedMovement)
 
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    updateEnd = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const movementId = +req.params.id
+            const driverId = (req as any).driverId
+
+            const movement = await this.movementRepository.findOne({
+                where: { id: movementId },
+                relations: ['driver', 'product', 'destinationBranch']
+            })
+
+            if (!movement) {
+                throw new AppError("Movimentação não encontrada", 404)
+            }
+
+            if (movement.status === MovementStatus.PENDING) {
+                throw new AppError("Esta movimentação ainda não foi iniciada", 400)
+            }
+
+            if (movement.status === MovementStatus.FINISHED) {
+                throw new AppError("Esta movimentação já foi finalizada", 400)
+            }
+
+            if (movement.driver && movement.driver.id !== driverId) {
+                throw new AppError("Outro motorista já está responsável por esta movimentação", 403)
+            }
+
+            await AppDataSource.transaction(async transactionalEntityManager => {
+                movement.status = MovementStatus.FINISHED
+
+                const existingProduct = await this.productRepository.findOne({
+                    where: {
+                        name: movement.product.name,
+                        branch: { id: movement.destinationBranch.id }
+                    }
+                })
+
+                if (existingProduct) {
+                    existingProduct.amount += movement.quantity
+                    await transactionalEntityManager.save(existingProduct)
+                } else {
+                    const newProduct = this.productRepository.create({
+                        name: movement.product.name,
+                        description: movement.product.description,
+                        url_cover: movement.product.url_cover,
+                        amount: movement.quantity,
+                        branch: { id: movement.destinationBranch.id }
+                    })
+
+                    await transactionalEntityManager.save(newProduct)
+                }
+            })
+
+            const fullMovement = await this.movementRepository.findOne({
+                where: { id: movementId },
+                relations: [
+                    'destinationBranch',
+                    'destinationBranch.user',
+                    'product',
+                    'driver',
+                    'driver.user'
+                ]
+            })
+
+            if (!fullMovement) {
+                throw new AppError("Movimentação não encontrada após atualização", 500)
+            }
+
+            const formattedMovement = this.formatMovement(fullMovement)
+            res.status(200).json(formattedMovement)
         } catch (error) {
             next(error)
         }
