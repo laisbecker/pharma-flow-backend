@@ -29,6 +29,7 @@
    "scripts": {
       "start:prod": "node build/index.js",
       "postinstall": "tsc",
+      "seed": "ts-node src/database/seed.ts",
       "start": "ts-node-dev --respawn --transpile-only src/index.ts",
       "typeorm": "typeorm-ts-node-commonjs",
       "migration:run": "typeorm-ts-node-commonjs -d ./src/database/data-source.ts migration:run",
