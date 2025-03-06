@@ -77,6 +77,9 @@ npm run migration:run
 
 7. Popular dados iniciais
 npm run seed
+
+8. Iniciar servidor
+npm run start
 ```
 
 ## 📂 Estrutura do Projeto
@@ -101,7 +104,7 @@ stockflow-manager/
 
 ## Link
 
-- Vídeo:
+- Vídeo de demonstração do projeto:
 
       https://drive.google.com/file/d/160IinzUsrhHBj_ZbHCMNnTqOpMz1Qub_/view?usp=sharing
 
