@@ -1,26 +1,25 @@
-require("dotenv").config();
+require('dotenv').config()
 
 import "reflect-metadata";
 import express from "express";
-import { AppDataSource } from "./data-source";
-
+import { AppDataSource } from "./database/data-source";
 import cors from "cors";
-
 import userRouter from "./routes/user.routes";
-
 import { handleError } from "./middlewares/handleError";
-
 import authRouter from "./routes/auth.routes";
 import logger from "./config/winston";
+import productRouter from "./routes/product.routes";
+import movementRouter from "./routes/movement.routes";
 
 const app = express();
 
 app.use(cors()); // Permite que o express entenda requisições de outros domínios
-
 app.use(express.json()); // Permite que o express entenda JSON
 
 app.use("/users", userRouter);
 app.use("/login", authRouter);
+app.use("/products", productRouter);
+app.use("/movements", movementRouter);
 
 app.get("/env", (req, res) => {
   res.json({
@@ -33,10 +32,12 @@ app.use(handleError);
 
 AppDataSource.initialize()
   .then(() => {
+    console.log("[DB] Banco de dados conectado com sucesso!");
     app.listen(process.env.PORT, () => {
-      logger.info(
-        `O servidor está rodando em http://localhost:${process.env.PORT}`
-      );
+      logger.info(`Servidor rodando na porta ${process.env.PORT}`);
     });
   })
-  .catch((error) => console.log(error));
+  .catch((error) => {
+    console.error("[DB ERRO] Falha na conexão com o banco:", error);
+    process.exit(1);
+  })
