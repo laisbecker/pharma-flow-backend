@@ -51,9 +51,7 @@ O StockFlow Manager resolve os desafios de:
 ### Passo a Passo
 ```bash
 1. Clonar repositório
-
-git clone https://github.com/seu-usuario/stockflow-manager.git
-cd stockflow-manager
+git clone https://github.com/laisbecker/pharma-flow-backend.git
 
 2. Instalar Dependências
 npm install
