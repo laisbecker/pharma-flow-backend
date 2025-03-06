@@ -200,6 +200,8 @@ class MovementController {
             await AppDataSource.transaction(async transactionalEntityManager => {
                 movement.status = MovementStatus.FINISHED
 
+                await transactionalEntityManager.save(movement)
+
                 const existingProduct = await this.productRepository.findOne({
                     where: {
                         name: movement.product.name,
