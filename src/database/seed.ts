@@ -2,6 +2,7 @@ import { AppDataSource } from "../database/data-source";
 import { User } from "../entities/User";
 import bcrypt from "bcrypt";
 import { UserProfile } from "../enums/UserProfile";
+import AppError from "../utils/AppError";
 
 async function seedAdminUser() {
   try {
@@ -14,7 +15,6 @@ async function seedAdminUser() {
     })
 
     if (existingAdmin) {
-      console.log("Usuário admin já existe")
       return
     }
 
@@ -25,10 +25,9 @@ async function seedAdminUser() {
     admin.profile = UserProfile.ADMIN
 
     await userRepository.save(admin)
-    console.log("✅ Admin criado com sucesso!")
 
   } catch (error) {
-    console.error("Erro ao criar admin:", error)
+    throw new AppError(`Falha ao criar usuário admin: ${error instanceof Error ? error.message : "Erro desconhecido"}`, 500)
   } finally {
     await AppDataSource.destroy()
   }
