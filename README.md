@@ -1,39 +1,30 @@
 # 💊 PharmaFlow 
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-[![Node.js](https://img.shields.io/badge/Node.js-18.x-green)](https://nodejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6)](https://www.typescriptlang.org/)
-
-## 📖 Índice
-- [Problema Solucionado](#-problema-solucionado)
-- [Funcionalidades Principais](#-funcionalidades-principais)
-- [Tecnologias Utilizadas](#-tecnologias-utilizadas)
-- [Como Executar](#-como-executar)
-- [Estrutura do Projeto](#-estrutura-do-projeto)
+## Índice
+- [Introdução](#introducao)
+- [Funcionalidades Principais](#funcionalidades-principais)
+- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Rotas da API](#rotas-da-api)
+- [Configuração e Execução do Projeto](#configuracao-e-execucao)
+- [Estrutura do Projeto](#estrutura-do-projeto)
 - [Melhorias Futuras](#melhorias-futuras)
-- [Link](#link)
+- [Demonstração](#demonstracao)
 
-Sistema de gestão de estoque multi-filiais com rastreamento de movimentações e controle de motoristas
+## <a id="introducao"></a>1. Introdução
+O PharmaFlow tem por objetivo realizer a gestão de movimentações de produtos entre as filiais de uma rede farmacêutica, garantindo controle de estoque em tempo real e rastreamento completo das operações.
 
-## 🎯 Problema Solucionado
-O StockFlow Manager resolve os desafios de:
-- Controle descentralizado de estoque entre múltiplas filiais
-- Rastreamento inadequado de transferências entre unidades
-- Comunicação ineficiente entre departamentos e motoristas
-- Falta de visão em tempo real do status das movimentações
-
-## ✨ Funcionalidades Principais
--  Autenticação de usuários com diferentes perfis (Admin, Filial, Motorista)
+##  <a id="funcionalidades-principais"></a>2. Funcionalidades Principais
+-  Autenticação de usuários com diferentes perfis e permissões (Admin, Filial, Motorista)
+-  Cadastro e transferência de produtos entre as filiais
 -  Controle de estoque em tempo real por filial
--  Rastreamento completo de movimentações (Pendente/Em Progresso/Concluído)
--  Dashboard de atividades e histórico de transações
--  Notificações de status para motoristas
+-  Rastreamento completo das movimentações (Pendente/Em Progresso/Concluído)
 
-## 🛠 Tecnologias Utilizadas
+## <a id="tecnologias-utilizadas"></a>3. Tecnologias Utilizadas
 
 ### Backend
 ![Node.js](https://img.shields.io/badge/-Node.js-339933?logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&logoColor=white)
+[![Express](https://img.shields.io/badge/-Express-000000?logo=express&logoColor=white)](https://expressjs.com/)
 ![TypeORM](https://img.shields.io/badge/-TypeORM-FE0909?logo=typeorm&logoColor=white)
 ![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-4169E1?logo=postgresql&logoColor=white)
 ![JWT](https://img.shields.io/badge/-JWT-000000?logo=json-web-tokens&logoColor=white)
@@ -41,7 +32,37 @@ O StockFlow Manager resolve os desafios de:
 ### Ferramentas
 ![Git](https://img.shields.io/badge/-Git-F05032?logo=git&logoColor=white)
 
-## 🚀 Como Executar
+## <a id="rotas-da-api"></a>4. Rotas da API
+
+### Autenticação
+| Método | Endpoint       | Descrição                | Auth |
+|--------|----------------|--------------------------|------|
+| `POST` | `/login`       | Login de usuários        | -    |
+
+### Usuários
+| Método  | Endpoint            | Descrição                                  | Permissão             |
+|---------|---------------------|--------------------------------------------|-----------------------|
+| `POST`  | `/users`            | Cadastro de usuários                       | Admin                 |
+| `GET`   | `/users`            | Listagem de usuários                       | Admin                 |
+| `GET`   | `/users/:id`        | Listagem de usuário por ID                 | Admin/próprio usuário |
+| `PUT`   | `/users/:id`        | Atualização de informações dos usuários    | Admin/próprio usuário |
+| `PATCH` | `/users/:id/status` | Alterar status de usuários (ativo/inativo) | Admin                 |
+
+### Produtos
+| Método | Endpoint        | Descrição                | Permissão     |
+|--------|-----------------|--------------------------|---------------|
+| `POST` | `/products`     | Cadastrar novo produto   | Branch        |
+| `GET`  | `/products`     | Listar todos produtos    | Branch        |
+
+### Movimentações
+| Método | Endpoint              | Descrição                  | Permissão               |
+|--------|-----------------------|----------------------------|-------------------------|
+| `POST` | `/movements`          | Cadastrar movimentação     | Branch                  |
+| `GET`  | `/movements`          | Listar movimentações       | Branch (destino)/Driver |
+| `PATCH`| `/movements/:id/start`| Iniciar Movimentação       | Driver                  |
+| `PATCH`| `/movements/:id/end`  | Finalizar Movimentação     | Driver                  |
+
+##  <a id="configuracao-e-execucao"></a>5. Configuração e Execução do Projeto
 
 ### Pré-requisitos
 - Node.js
@@ -57,7 +78,7 @@ git clone https://github.com/laisbecker/pharma-flow-backend.git
 npm install
 
 3. Configurar ambiente
-cp .env.example .env
+cp .env-example .env
 
 4. Preencher o arquivo .env com as informações necessárias
 DB_HOST=localhost
@@ -70,7 +91,7 @@ JWT_SECRET=(senha_secreta)
 PORT=3000
 
 5. Criar Database com o nome pharma-flow-project
-CREATE DATABASE pharma-flow-project;
+CREATE DATABASE pharma-flow-project
 
 6. Executar migrações
 npm run migration:run
@@ -81,10 +102,13 @@ npm run seed
 8. Iniciar servidor
 npm run start
 ```
+|   |   |
+|---|---|
+| ⚠️ | Para testar o funcionamento do sistema, logue com o e-mail e senha que foram criados com o arquivo seed. E-mail: admin@email.com, Senha: 123456 |
 
-## 📂 Estrutura do Projeto
+## <a id="estrutura-do-projeto"></a>6. Estrutura do Projeto
 ```bash
-stockflow-manager/
+pharma-flow-backend/
 ├── src/
 │   ├── controllers/    # Lógica dos endpoints
 │   ├── entities/       # Modelos do banco de dados
@@ -96,16 +120,16 @@ stockflow-manager/
 └── package.json        # Dependências e scripts
 ```
 
-## Melhorias Futuras
+## <a id="melhorias-futuras"></a>7. Melhorias Futuras
 
-- Implementar paginação das listagens de usuário, produtos e movimentação.
+- Implementar paginação das listagens de usuários, produtos e movimentações.
 
-- Desenvolver módulo de relatórios PDF
+- Desenvolver módulo de relatórios PDF e dashboard
 
-## Link
+## <a id="demonstracao"></a>8. Demonstração
 
-- Vídeo de demonstração do projeto:
+- Vídeo de demonstração de funcionamento do projeto:
 
-      https://drive.google.com/file/d/160IinzUsrhHBj_ZbHCMNnTqOpMz1Qub_/view?usp=sharing
+      https://drive.google.com/file/d/1SzwRMJ3h3G_dPQnfGMpdi1xs2Opfs4xF/view?usp=drive_link
 
   
